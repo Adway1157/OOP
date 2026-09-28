@@ -1,0 +1,68 @@
+// Program: Overloading the / operator to divide two complex numbers
+// Formula: (a + bi) / (c + di) = [(ac + bd) + (bc - ad)i] / (c^2 + d^2)
+
+#include <iostream>
+using namespace std;
+
+// Class representing a complex number: real + imag * i
+class Complex {
+private:
+    double real;   // real part
+    double imag;   // imaginary part
+
+public:
+    // Constructor with default values (0 + 0i)
+    Complex(double r = 0.0, double i = 0.0) {
+        real = r;
+        imag = i;
+    }
+
+    // Overload the / operator to divide two complex numbers.
+    // 'const' means this function does not modify the left operand.
+    Complex operator/(const Complex& other) const {
+        // Denominator: c^2 + d^2
+        double denominator = other.real * other.real + other.imag * other.imag;
+
+        // Dividing by 0 + 0i is undefined, so show an error and return 0 + 0i
+        if (denominator == 0.0) {
+            cout << "Error: Division by zero complex number!" << endl;
+            return Complex(0, 0);
+        }
+
+        // Real part of result: (ac + bd) / (c^2 + d^2)
+        double newReal = (real * other.real + imag * other.imag) / denominator;
+
+        // Imaginary part of result: (bc - ad) / (c^2 + d^2)
+        double newImag = (imag * other.real - real * other.imag) / denominator;
+
+        // Return the result as a new Complex object
+        return Complex(newReal, newImag);
+    }
+
+    // Function to print a complex number in the form a + bi
+    void display() const {
+        if (imag >= 0)
+            cout << real << " + " << imag << "i" << endl;
+        else
+            cout << real << " - " << -imag << "i" << endl;
+    }
+};
+
+int main() {
+    // Create two complex numbers: (4 + 2i) and (1 + 3i)
+    Complex c1(4, 2);
+    Complex c2(1, 3);
+
+    cout << "First complex number:  ";
+    c1.display();
+    cout << "Second complex number: ";
+    c2.display();
+
+    // Use the overloaded / operator (calls c1.operator/(c2))
+    Complex result = c1 / c2;
+
+    cout << "Result of division:    ";
+    result.display();   // Expected: 1 - 1i
+
+    return 0;
+}
