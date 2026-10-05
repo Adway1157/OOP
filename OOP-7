@@ -1,0 +1,66 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Class to represent a String
+class String
+{
+    char *str;
+
+public:
+
+    // Default constructor
+    String()
+    {
+        str = new char[100];
+        str[0] = '\0';
+    }
+
+    // Copy constructor
+    String(const String &s)
+    {
+        str = new char[100];
+        strcpy(str, s.str);
+    }
+
+    // Function to accept a string
+    void Accept()
+    {
+        cout << "Enter a string: ";
+        cin >> str;
+    }
+
+    // Function to display the string
+    void Display()
+    {
+        cout << str << endl;
+    }
+
+    // Destructor
+    ~String()
+    {
+        delete[] str;
+    }
+};
+
+int main()
+{
+    // Create first object
+    String First;
+
+    // Accept the string
+    First.Accept();
+
+    // Create second object using copy constructor
+    String Second(First);
+
+    // Display original string
+    cout << "\nFirst string: ";
+    First.Display();
+
+    // Display copied string
+    cout << "Copied string: ";
+    Second.Display();
+
+    return 0;
+}
