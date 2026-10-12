@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// ---------- Base class ----------
+class Vehicle {
+protected:
+    string brand;   // brand name of the vehicle
+    int year;       // manufacturing year
+
+public:
+    // Constructor to initialize common data
+    Vehicle(string b, int y) : brand(b), year(y) {}
+
+    // Virtual function: enables run-time polymorphism.
+    // The version that runs is decided by the actual object type, not the pointer type.
+    virtual void showDetails() const {
+        cout << "Vehicle Brand: " << brand << endl;
+        cout << "Model Year   : " << year << endl;
+    }
+
+    // Virtual destructor: ensures the derived class destructor runs
+    // when an object is deleted through a base class pointer
+    virtual ~Vehicle() {
+        cout << "Vehicle destructor called\n";
+    }
+};
+
+// ---------- Derived class 1: Car ----------
+class Car : public Vehicle {
+private:
+    int doors;   // number of doors, specific to Car
+
+public:
+    // Pass common data to the base class constructor
+    Car(string b, int y, int d) : Vehicle(b, y), doors(d) {}
+
+    // Override the base class function with Car-specific behaviour
+    void showDetails() const override {
+        cout << "\n--- Car Details ---\n";
+        Vehicle::showDetails();   // reuse base class output
+        cout << "Doors        : " << doors << endl;
+    }
+
+    ~Car() {
+        cout << "Car destructor called\n";
+    }
+};
+
+// ---------- Derived class 2: Bike ----------
+class Bike : public Vehicle {
+private:
+    int engineCC;   // engine capacity, specific to Bike
+
+public:
+    Bike(string b, int y, int cc) : Vehicle(b, y), engineCC(cc) {}
+
+    // Override the base class function with Bike-specific behaviour
+    void showDetails() const override {
+        cout << "\n--- Bike Details ---\n";
+        Vehicle::showDetails();   // reuse base class output
+        cout << "Engine (cc)  : " << engineCC << endl;
+    }
+
+    ~Bike() {
+        cout << "Bike destructor called\n";
+    }
+};
+
+// ---------- Main function ----------
+int main() {
+    // Step 1: create a base class pointer
+    Vehicle* ptr;
+
+    // Step 2: create objects of the derived classes (dynamically)
+    Car* c = new Car("Toyota", 2022, 4);
+    Bike* b = new Bike("Yamaha", 2023, 155);
+
+    // Step 3: point the base pointer to the Car object and call the function.
+    // Because showDetails() is virtual, Car's version runs.
+    ptr = c;
+    ptr->showDetails();
+
+    // Step 4: point the same base pointer to the Bike object.
+    // The same call now runs Bike's version.
+    ptr = b;
+    ptr->showDetails();
+
+    // Step 5: free the memory.
+    // The virtual destructor makes sure both derived and base destructors run.
+    cout << "\n--- Cleaning up ---\n";
+    delete c;
+    delete b;
+
+    return 0;
+}
