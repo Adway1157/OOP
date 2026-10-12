@@ -1,0 +1,108 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
+
+// ---------- Base class 1: basic employee information ----------
+class Employee {
+protected:
+    int empId;          // unique employee ID
+    string name;        // employee name
+    string department;  // department name
+
+public:
+    // Read basic details from the user
+    void getEmployeeInfo() {
+        cout << "Enter Employee ID: ";
+        cin >> empId;
+        cin.ignore();  // clear the newline left in the buffer
+
+        cout << "Enter Name: ";
+        getline(cin, name);
+
+        cout << "Enter Department: ";
+        getline(cin, department);
+    }
+
+    // Display basic details
+    void displayEmployeeInfo() const {
+        cout << "Employee ID : " << empId << endl;
+        cout << "Name        : " << name << endl;
+        cout << "Department  : " << department << endl;
+    }
+};
+
+// ---------- Base class 2: attendance information ----------
+class Attendance {
+protected:
+    int totalWorkingDays;  // total working days in the period
+    int daysPresent;       // days the employee was present
+
+public:
+    // Read attendance details with validation
+    void getAttendanceInfo() {
+        cout << "Enter Total Working Days: ";
+        cin >> totalWorkingDays;
+
+        cout << "Enter Days Present: ";
+        cin >> daysPresent;
+
+        // Validate: present days cannot exceed working days
+        while (daysPresent < 0 || daysPresent > totalWorkingDays) {
+            cout << "Invalid! Days present must be between 0 and "
+                 << totalWorkingDays << ". Re-enter: ";
+            cin >> daysPresent;
+        }
+    }
+
+    // Display attendance details
+    void displayAttendanceInfo() const {
+        cout << "Working Days: " << totalWorkingDays << endl;
+        cout << "Days Present: " << daysPresent << endl;
+        cout << "Days Absent : " << (totalWorkingDays - daysPresent) << endl;
+    }
+};
+
+// ---------- Derived class: multiple inheritance ----------
+// Report inherits from BOTH Employee and Attendance
+class Report : public Employee, public Attendance {
+private:
+    float percentage;  // attendance percentage
+
+public:
+    // Calculate attendance percentage using data from the Attendance base class
+    void calculatePercentage() {
+        if (totalWorkingDays > 0)
+            percentage = (static_cast<float>(daysPresent) / totalWorkingDays) * 100;
+        else
+            percentage = 0;  // avoid division by zero
+    }
+
+    // Display the complete report using members of both base classes
+    void displayReport() const {
+        cout << "\n=ATTENDANCE REPORT=\n";
+        displayEmployeeInfo();      // from Employee
+        displayAttendanceInfo();    // from Attendance
+        cout << fixed << setprecision(2);
+        cout << "Attendance %: " << percentage << "%" << endl;
+
+        // Give a remark based on the percentage
+        if (percentage >= 75)
+            cout << "Remark      : Satisfactory attendance\n";
+        else
+            cout << "Remark      : Shortage of attendance\n";
+        cout << "-----------------------------------------\n";
+    }
+};
+
+// ---------- Main function ----------
+int main() {
+    Report emp;  // object of the derived class
+
+    emp.getEmployeeInfo();     // Step 1: input employee details
+    emp.getAttendanceInfo();   // Step 2: input attendance details
+    emp.calculatePercentage(); // Step 3: compute attendance percentage
+    emp.displayReport();       // Step 4: print the final report
+
+    return 0;
+}
