@@ -1,0 +1,51 @@
+#include <iostream>
+#include <cmath>       // for sqrt()
+#include <stdexcept>   // for invalid_argument
+using namespace std;
+
+// ---------- Function that calculates the square root ----------
+double findSquareRoot(double num) {
+    // Step 1: check for an invalid input and throw an exception
+    if (num < 0) {
+        throw invalid_argument("Square root of a negative number is not defined.");
+    }
+
+    // Step 2: if the number is valid, return its square root
+    return sqrt(num);
+}
+
+// ---------- Main function ----------
+int main() {
+    double number;
+
+    // Step 3: take input from the user
+    cout << "Enter a number: ";
+    cin >> number;
+
+    // Step 4: check that the input was a valid number (not text)
+    if (cin.fail()) {
+        cout << "Error: Please enter a numeric value." << endl;
+        return 1;
+    }
+
+    // Step 5: place the risky code inside a try block
+    try {
+        double result = findSquareRoot(number);   // may throw an exception
+
+        // Step 6: runs only if no exception was thrown
+        cout << "Square root of " << number << " = " << result << endl;
+    }
+    // Step 7: catch the specific exception thrown by findSquareRoot()
+    catch (const invalid_argument& e) {
+        cout << "Exception caught: " << e.what() << endl;
+    }
+    // Step 8: catch any other unexpected exception
+    catch (...) {
+        cout << "An unknown error occurred." << endl;
+    }
+
+    // Step 9: the program continues normally after handling the exception
+    cout << "Program finished." << endl;
+
+    return 0;
+}
